@@ -67,19 +67,22 @@ async function createNewOTP(params, callback) {
   const expires = Date.now() + ttl; //timestamp to 5 minutes in the future
   const data = `${params.phone}.${otp}.${expires}`; // phone.otp.expiry_timestamp
   const hash = crypto.createHmac("sha256", key).update(data).digest("hex"); // creating SHA256 hash of the data
-  const fullHash = `${hash}.${expires}`; // Hash.expires, format to send to the user
+  // const fullHash = [`${hash}.${expires}`, `pass for devmode ${otp}`] // Hash.expires, format to send to the user
+  const fullHash = {"data":`${hash}.${expires}`, "devpass":otp} // Hash.expires, format to send to the user
   // you have to implement the function to send SMS yourself. For demo purpose. let's assume it's called sendSMS
   //sendSMS(phone, `Your OTP is ${otp}. it will expire in 5 minutes`);
 
   console.log(`Your OTP is ${otp}. it will expire in 5 minutes`);
 
-  var otpMessage = `Dear Customer, ${otp} is the One Time Password ( OTP ) for your login.`;
+  const testopt = otp;
+  // console.log("for testing perpus we check it",testopt)
+  // var otpMessage = `Dear Customer, ${otp} is the One Time Password ( OTP ) for your login.`;
 
   // msg91.send(`+91${params.phone}`, otpMessage, function (err, response) {
   //   console.log(response);
   // });
 
-  return callback(null, fullHash);
+  return callback(null, fullHash, testopt );
 }
 
 async function verifyOTP(params, callback) {
